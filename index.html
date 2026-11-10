@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FGF HUD</title>
+  <style>
+    :root {
+      --bg: #0f141c;
+      --card: #18202c;
+      --border: #263345;
+      --text: #e6edf3;
+      --accent-kinetic: #e06c75;
+      --accent-beam: #61afef;
+      --accent-ion: #98c379;
+      --highlight: #d19a66;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 10px; font-size: 13px; line-height: 1.4; }
+
+    /* Nav Tabs */
+    .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+    .tab-btn { flex: 1; padding: 8px 4px; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; }
+    .tab-btn.active { background: #2b394e; border-color: #4f6b94; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* Counter Matrix */
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .counter-btn { padding: 10px 4px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; color: #fff; }
+    .btn-kinetic { background: var(--accent-kinetic); }
+    .btn-beam { background: var(--accent-beam); }
+    .btn-ion { background: var(--accent-ion); color: #1e1e1e; }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+    .card h4 { font-size: 13px; margin-bottom: 6px; color: var(--highlight); }
+    .pill { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 4px; }
+    .pill-win { background: rgba(152, 195, 121, 0.2); color: var(--accent-ion); border: 1px solid var(--accent-ion); }
+    .pill-lose { background: rgba(224, 108, 117, 0.2); color: var(--accent-kinetic); border: 1px solid var(--accent-kinetic); }
+
+    /* Timers */
+    .timer-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .timer-display { font-family: monospace; font-size: 15px; font-weight: bold; }
+    .timer-ctrls button { padding: 5px 8px; background: #263345; color: #fff; border: 1px solid #3c4f6b; border-radius: 4px; cursor: pointer; margin-left: 4px; }
+
+    /* Speedup Calc */
+    .calc-row { display: flex; gap: 6px; margin-bottom: 8px; }
+    .calc-row input { flex: 1; padding: 6px; background: #0b0e14; border: 1px solid var(--border); color: #fff; border-radius: 4px; text-align: center; }
+    .calc-total { font-size: 14px; font-weight: bold; color: var(--highlight); text-align: center; margin-top: 6px; }
+  </style>
+</head>
+<body>
+
+  <!-- Tab-Leiste -->
+  <div class="tabs">
+    <div class="tab-btn active" onclick="switchTab('counter')">⚔️ Counter</div>
+    <div class="tab-btn" onclick="switchTab('timer')">⏱️ Timer</div>
+    <div class="tab-btn" onclick="switchTab('calc')">⚡ Speedup</div>
+  </div>
+
+  <!-- VIEW 1: COUNTER -->
+  <div id="tab-counter" class="view active">
+    <div style="font-size: 11px; margin-bottom: 6px; color: #8b949e;">Feindlichen Flottentyp wählen:</div>
+    <div class="btn-grid">
+      <button class="counter-btn btn-kinetic" onclick="showCounter('Kinetic')">Kinetic</button>
+      <button class="counter-btn btn-beam" onclick="showCounter('Beam')">Beam</button>
+      <button class="counter-btn btn-ion" onclick="showCounter('Ion')">Ion</button>
+    </div>
+
+    <div id="counter-result" class="card">
+      <h4 id="enemy-title">Wähle einen Typ oben</h4>
+      <div id="counter-body" style="font-size: 12px; color: #abb2bf;">Tippe auf den gegnerischen Flottentyp, um Konter, Schwächen und Setup-Tipps zu laden.</div>
+    </div>
+  </div>
+
+  <!-- VIEW 2: MULTI-TIMER -->
+  <div id="tab-timer" class="view">
+    <div class="card">
+      <div class="timer-row">
+        <div>
+          <div><strong>15m Rally / Attack</strong></div>
+          <div class="timer-display" id="time-1">15:00</div>
+        </div>
+        <div class="timer-ctrls">
+          <button onclick="startTimer(1, 900)">Start</button>
+          <button onclick="resetTimer(1, 900)">Reset</button>
+        </div>
+      </div>
+
+      <div class="timer-row">
+        <div>
+          <div><strong>4h Peace Shield</strong></div>
+          <div class="timer-display" id="time-2">04:00:00</div>
+        </div>
+        <div class="timer-ctrls">
+          <button onclick="startTimer(2, 14400)">Start</button>
+          <button onclick="resetTimer(2, 14400)">Reset</button>
+        </div>
+      </div>
+
+      <div class="timer-row" style="border:none; margin:0; padding:0;">
+        <div>
+          <div><strong>8h Shield / Sleep</strong></div>
+          <div class="timer-display" id="time-3">08:00:00</div>
+        </div>
+        <div class="timer-ctrls">
+          <button onclick="startTimer(3, 28800)">Start</button>
+          <button onclick="resetTimer(3, 28800)">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW 3: SPEEDUP CALCULATOR -->
+  <div id="tab-calc" class="view">
+    <div class="card">
+      <h4 style="margin-bottom:8px;">Beschleuniger summieren</h4>
+      <div class="calc-row">
+        <input type="number" id="sp-d" placeholder="Tage" oninput="calcSpeedups()">
+        <input type="number" id="sp-h" placeholder="Std" oninput="calcSpeedups()">
+        <input type="number" id="sp-m" placeholder="Min" oninput="calcSpeedups()">
+      </div>
+      <div class="calc-total" id="calc-result">Gesamt: 0 Stunden (0,0 Tage)</div>
+    </div>
+  </div>
+
+  <script>
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Counter Database
+    const data = {
+      'Kinetic': {
+        win: 'Beam Flotten & Schilde',
+        lose: 'Ion Flotten & Armor',
+        tip: 'Kinetic setzt auf Rohe Schadensspitzen gegen Hülle. Nutze Beam-Schiffe mit starker Schild-Regeneration, um den Burst abzufangen.'
+      },
+      'Beam': {
+        win: 'Ion Flotten',
+        lose: 'Kinetic Flotten',
+        tip: 'Beam zerschmilzt Schilde kontinuierlich. Stelle auf Kinetic mit Burst-Modulen um, um ihre Schiffe auszuschalten, bevor deine Schilde fallen.'
+      },
+      'Ion': {
+        win: 'Kinetic Flotten',
+        lose: 'Beam Flotten',
+        tip: 'Ion durchdringt schwere Panzerung und stört Systeme. Kontere primär mit Beam-Waffen, da Ion gegen Dauerfeuer und Schildstärken verliert.'
+      }
+    };
+
+    function showCounter(type) {
+      const info = data[type];
+      document.getElementById('enemy-title').innerText = 'Gegner: ' + type;
+      document.getElementById('counter-body').innerHTML = `
+        <div style="margin-bottom:6px;"><span class="pill pill-win">Effektiver Konter</span> <strong>${info.win}</strong></div>
+        <div style="margin-bottom:8px;"><span class="pill pill-lose">Vermeiden</span> ${info.lose}</div>
+        <p style="font-size:11px; line-height:1.3; color:#c9d1d9;">${info.tip}</p>
+      `;
+    }
+
+    // Timer Logic
+    const timers = {};
+    function formatTime(sec) {
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+      if (h > 0) {
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      }
+      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function startTimer(id, defaultSec) {
+      if (timers[id]) clearInterval(timers[id].interval);
+      let rem = timers[id] ? timers[id].rem : defaultSec;
+      
+      timers[id] = {
+        rem: rem,
+        interval: setInterval(() => {
+          if (timers[id].rem > 0) {
+            timers[id].rem--;
+            document.getElementById('time-' + id).innerText = formatTime(timers[id].rem);
+          } else {
+            clearInterval(timers[id].interval);
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            alert('Timer abgelaufen!');
+          }
+        }, 1000)
+      };
+    }
+
+    function resetTimer(id, defaultSec) {
+      if (timers[id]) clearInterval(timers[id].interval);
+      timers[id] = { rem: defaultSec, interval: null };
+      document.getElementById('time-' + id).innerText = formatTime(defaultSec);
+    }
+
+    // Speedup Logic
+    function calcSpeedups() {
+      const d = parseFloat(document.getElementById('sp-d').value) || 0;
+      const h = parseFloat(document.getElementById('sp-h').value) || 0;
+      const m = parseFloat(document.getElementById('sp-m').value) || 0;
+
+      const totalHours = (d * 24) + h + (m / 60);
+      const totalDays = totalHours / 24;
+
+      document.getElementById('calc-result').innerText = 
+        `Gesamt: ${totalHours.toFixed(1)} Std (${totalDays.toFixed(2)} Tage)`;
+    }
+  </script>
+</body>
+</html>
