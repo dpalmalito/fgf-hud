@@ -1,217 +1,368 @@
+```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>FGF HUD</title>
+  <title>FGF Calamity Companion Overlay</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
     :root {
-      --bg: #0f141c;
-      --card: #18202c;
-      --border: #263345;
-      --text: #e6edf3;
-      --accent-kinetic: #e06c75;
-      --accent-beam: #61afef;
-      --accent-ion: #98c379;
-      --highlight: #d19a66;
+      --kinetic-color: #f59e0b;
+      --beam-color: #a855f7;
+      --ion-color: #06b6d4;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 10px; font-size: 13px; line-height: 1.4; }
 
-    /* Nav Tabs */
-    .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
-    .tab-btn { flex: 1; padding: 8px 4px; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 6px; font-weight: bold; cursor: pointer; text-align: center; }
-    .tab-btn.active { background: #2b394e; border-color: #4f6b94; }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background-color: #050811;
+      color: #e2e8f0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    .view { display: none; }
-    .view.active { display: block; }
+    .font-hud {
+      font-family: 'Orbitron', monospace;
+    }
 
-    /* Counter Matrix */
-    .btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
-    .counter-btn { padding: 10px 4px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; color: #fff; }
-    .btn-kinetic { background: var(--accent-kinetic); }
-    .btn-beam { background: var(--accent-beam); }
-    .btn-ion { background: var(--accent-ion); color: #1e1e1e; }
+    .glass-panel {
+      background: rgba(13, 20, 36, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
 
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
-    .card h4 { font-size: 13px; margin-bottom: 6px; color: var(--highlight); }
-    .pill { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 4px; }
-    .pill-win { background: rgba(152, 195, 121, 0.2); color: var(--accent-ion); border: 1px solid var(--accent-ion); }
-    .pill-lose { background: rgba(224, 108, 117, 0.2); color: var(--accent-kinetic); border: 1px solid var(--accent-kinetic); }
+    .glass-card {
+      background: rgba(18, 27, 47, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
 
-    /* Timers */
-    .timer-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-    .timer-display { font-family: monospace; font-size: 15px; font-weight: bold; }
-    .timer-ctrls button { padding: 5px 8px; background: #263345; color: #fff; border: 1px solid #3c4f6b; border-radius: 4px; cursor: pointer; margin-left: 4px; }
+    .glow-cyan {
+      box-shadow: 0 0 16px -2px rgba(6, 182, 212, 0.35);
+    }
 
-    /* Speedup Calc */
-    .calc-row { display: flex; gap: 6px; margin-bottom: 8px; }
-    .calc-row input { flex: 1; padding: 6px; background: #0b0e14; border: 1px solid var(--border); color: #fff; border-radius: 4px; text-align: center; }
-    .calc-total { font-size: 14px; font-weight: bold; color: var(--highlight); text-align: center; margin-top: 6px; }
+    .glow-orange {
+      box-shadow: 0 0 16px -2px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Custom Scrollbar for compact floating windows */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(5, 8, 17, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #0284c7;
+      border-radius: 9999px;
+    }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden p-2 sm:p-4">
 
-  <!-- Tab-Leiste -->
-  <div class="tabs">
-    <div class="tab-btn active" onclick="switchTab('counter')">⚔️ Counter</div>
-    <div class="tab-btn" onclick="switchTab('timer')">⏱️ Timer</div>
-    <div class="tab-btn" onclick="switchTab('calc')">⚡ Speedup</div>
-  </div>
-
-  <!-- VIEW 1: COUNTER -->
-  <div id="tab-counter" class="view active">
-    <div style="font-size: 11px; margin-bottom: 6px; color: #8b949e;">Feindlichen Flottentyp wählen:</div>
-    <div class="btn-grid">
-      <button class="counter-btn btn-kinetic" onclick="showCounter('Kinetic')">Kinetic</button>
-      <button class="counter-btn btn-beam" onclick="showCounter('Beam')">Beam</button>
-      <button class="counter-btn btn-ion" onclick="showCounter('Ion')">Ion</button>
+  <!-- HUD TOP BAR (Optimized for Android Bubble / Split View) -->
+  <header class="glass-panel rounded-xl p-2.5 mb-2.5 flex items-center justify-between border-cyan-500/30 sticky top-0 z-50">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-cyan-900/50">
+        <i class="fa-solid fa-crosshairs text-sm"></i>
+      </div>
+      <div>
+        <h1 class="font-hud text-xs sm:text-sm font-bold tracking-wider text-cyan-400 leading-tight">FGF CALAMITY HUD</h1>
+        <p class="text-[10px] text-slate-400 font-sans tracking-wide">Foundation: Galactic Frontier</p>
+      </div>
     </div>
 
-    <div id="counter-result" class="card">
-      <h4 id="enemy-title">Wähle einen Typ oben</h4>
-      <div id="counter-body" style="font-size: 12px; color: #abb2bf;">Tippe auf den gegnerischen Flottentyp, um Konter, Schwächen und Setup-Tipps zu laden.</div>
+    <!-- Quick Compact Toggle & State Pills -->
+    <div class="flex items-center gap-1.5">
+      <button id="toggle-compact" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-300 rounded text-[11px] font-medium border border-slate-700 flex items-center gap-1 transition">
+        <i class="fa-solid fa-compress text-[10px]" id="compact-icon"></i>
+        <span id="compact-label" class="hidden sm:inline">Kompakt</span>
+      </button>
+      <div class="px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-[10px] text-emerald-400 font-mono font-bold flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+        SYNC
+      </div>
     </div>
-  </div>
+  </header>
 
-  <!-- VIEW 2: MULTI-TIMER -->
-  <div id="tab-timer" class="view">
-    <div class="card">
-      <div class="timer-row">
+  <!-- NAVIGATION TABS -->
+  <nav class="grid grid-cols-2 gap-1.5 mb-3">
+    <button id="tab-fleet-btn" onclick="switchTab('fleet')" class="py-1.5 px-3 rounded-lg text-xs font-bold font-hud transition flex items-center justify-center gap-1.5 bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-sm shadow-cyan-500/20">
+      <i class="fa-solid fa-layer-group"></i> Flotten-Setups
+    </button>
+    <button id="tab-tools-btn" onclick="switchTab('tools')" class="py-1.5 px-3 rounded-lg text-xs font-bold font-hud transition flex items-center justify-center gap-1.5 bg-slate-800/80 text-slate-400 border border-slate-700/60 hover:text-slate-200">
+      <i class="fa-solid fa-stopwatch"></i> Timer & Tools
+    </button>
+  </nav>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="flex-1 space-y-3" id="main-content">
+
+    <!-- ================= TAB 1: FLEET SETUP ================= -->
+    <section id="tab-fleet" class="space-y-3">
+
+      <!-- QUICK STAT BAR -->
+      <div class="glass-card rounded-xl p-2.5 border-l-4 border-l-amber-500 flex items-center justify-between text-xs">
         <div>
-          <div><strong>15m Rally / Attack</strong></div>
-          <div class="timer-display" id="time-1">15:00</div>
+          <span class="text-slate-400 text-[10px] block">SCHADENS-FOKUS</span>
+          <span class="font-bold text-amber-400 font-hud tracking-wide">GRAM BURST (KINETIC)</span>
         </div>
-        <div class="timer-ctrls">
-          <button onclick="startTimer(1, 900)">Start</button>
-          <button onclick="resetTimer(1, 900)">Reset</button>
-        </div>
-      </div>
-
-      <div class="timer-row">
-        <div>
-          <div><strong>4h Peace Shield</strong></div>
-          <div class="timer-display" id="time-2">04:00:00</div>
-        </div>
-        <div class="timer-ctrls">
-          <button onclick="startTimer(2, 14400)">Start</button>
-          <button onclick="resetTimer(2, 14400)">Reset</button>
+        <div class="text-right">
+          <span class="text-slate-400 text-[10px] block">ZIEL-BOSS</span>
+          <span class="text-emerald-400 font-semibold font-mono">CALAMITY EVENT</span>
         </div>
       </div>
 
-      <div class="timer-row" style="border:none; margin:0; padding:0;">
-        <div>
-          <div><strong>8h Shield / Sleep</strong></div>
-          <div class="timer-display" id="time-3">08:00:00</div>
+      <!-- FLEET 1: GRAM -->
+      <div class="glass-panel rounded-xl p-3 border-amber-500/30 glow-orange relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center text-xs font-hud font-bold">1</span>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h2 class="font-hud font-bold text-amber-400 text-sm tracking-wider">GRAM</h2>
+                <span class="text-[10px] px-1.5 py-0.2 bg-amber-500/20 border border-amber-500/40 rounded text-amber-300 font-mono">LVL 30 • T3 +8</span>
+              </div>
+              <p class="text-[10px] text-slate-400">Main Core-Killer • ~80% Gesamtschaden</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-bold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/30">
+            <i class="fa-solid fa-meteor mr-1"></i>Kinetic
+          </span>
         </div>
-        <div class="timer-ctrls">
-          <button onclick="startTimer(3, 28800)">Start</button>
-          <button onclick="resetTimer(3, 28800)">Reset</button>
+
+        <!-- 3 Champions Grid -->
+        <div class="grid grid-cols-3 gap-1.5 mb-2.5">
+          <!-- Zora -->
+          <div class="glass-card p-2 rounded-lg border-slate-700/80 text-center relative hover:border-amber-500/40 transition">
+            <div class="text-[10px] text-amber-400 font-bold mb-0.5">CORE DPS</div>
+            <div class="font-bold text-xs text-white truncate">Zora Domini</div>
+            <div class="text-[9px] text-slate-400 truncate">Armor-Pen / Salven</div>
+            <div class="mt-1 text-[9px] text-emerald-400 bg-emerald-950/50 rounded py-0.5 border border-emerald-500/20">Bleibt drin</div>
+          </div>
+          <!-- Eva -->
+          <div class="glass-card p-2 rounded-lg border-amber-500/40 bg-amber-500/5 text-center relative">
+            <div class="text-[10px] text-amber-400 font-bold mb-0.5">AMP BUFF</div>
+            <div class="font-bold text-xs text-white truncate">Eva von Trier</div>
+            <div class="text-[9px] text-slate-400 truncate">Kinetic + Crit Buff</div>
+            <div class="mt-1 text-[9px] text-cyan-300 bg-cyan-950/50 rounded py-0.5 border border-cyan-500/30">Aus Flotte 3</div>
+          </div>
+          <!-- Killer Bee -->
+          <div class="glass-card p-2 rounded-lg border-amber-500/40 bg-amber-500/5 text-center relative">
+            <div class="text-[10px] text-amber-400 font-bold mb-0.5">FINISHER</div>
+            <div class="font-bold text-xs text-white truncate">Killer Bee</div>
+            <div class="text-[9px] text-slate-400 truncate">Max Single Target</div>
+            <div class="mt-1 text-[9px] text-amber-300 bg-amber-950/50 rounded py-0.5 border border-amber-500/30">Neu einsetzen</div>
+          </div>
+        </div>
+
+        <div class="bg-black/40 rounded-lg p-2 text-[11px] text-slate-300 border border-white/5 space-y-1">
+          <div class="flex items-start gap-1.5">
+            <i class="fa-solid fa-circle-exclamation text-amber-400 mt-0.5 text-[10px]"></i>
+            <span><strong>Gram-Taktik:</strong> Manuell im optimalen Feuerwinkel halten. Zora & Bee dürfen niemals an Adds verschwenden.</span>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- VIEW 3: SPEEDUP CALCULATOR -->
-  <div id="tab-calc" class="view">
-    <div class="card">
-      <h4 style="margin-bottom:8px;">Beschleuniger summieren</h4>
-      <div class="calc-row">
-        <input type="number" id="sp-d" placeholder="Tage" oninput="calcSpeedups()">
-        <input type="number" id="sp-h" placeholder="Std" oninput="calcSpeedups()">
-        <input type="number" id="sp-m" placeholder="Min" oninput="calcSpeedups()">
+      <!-- FLEET 2: BOSS DEBUFF & WEAKEN -->
+      <div class="glass-panel rounded-xl p-3 border-purple-500/30 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center text-xs font-hud font-bold">2</span>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h2 class="font-hud font-bold text-purple-400 text-sm tracking-wider">SUPPORT 1</h2>
+                <span class="text-[10px] px-1.5 py-0.2 bg-purple-500/20 border border-purple-500/40 rounded text-purple-300 font-mono">LVL 26 • T3 +5</span>
+              </div>
+              <p class="text-[10px] text-slate-400">Boss-Debuff & Armor-Shred</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-bold text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-500/30">
+            <i class="fa-solid fa-bolt mr-1"></i>Beam
+          </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1.5 mb-2.5">
+          <!-- Doug -->
+          <div class="glass-card p-2 rounded-lg border-purple-500/40 bg-purple-500/5 text-center">
+            <div class="text-[10px] text-purple-400 font-bold mb-0.5">KEY DEBUFF</div>
+            <div class="font-bold text-xs text-white truncate">Doug Rockwell</div>
+            <div class="text-[9px] text-slate-400 truncate">Armor-Shred / Vuln</div>
+            <div class="mt-1 text-[9px] text-emerald-400 bg-emerald-950/50 rounded py-0.5 border border-emerald-500/20">Aus Flotte 2</div>
+          </div>
+          <!-- Aliya -->
+          <div class="glass-card p-2 rounded-lg border-slate-700/80 text-center">
+            <div class="text-[10px] text-purple-400 font-bold mb-0.5">OFFENSE</div>
+            <div class="font-bold text-xs text-white truncate">Aliya</div>
+            <div class="text-[9px] text-slate-400 truncate">ATK Buff / Beam</div>
+            <div class="mt-1 text-[9px] text-cyan-300 bg-cyan-950/50 rounded py-0.5 border border-cyan-500/30">Von Gram</div>
+          </div>
+          <!-- Lucius -->
+          <div class="glass-card p-2 rounded-lg border-slate-700/80 text-center">
+            <div class="text-[10px] text-purple-400 font-bold mb-0.5">SUB-DPS</div>
+            <div class="font-bold text-xs text-white truncate">Lucius Pullo</div>
+            <div class="text-[9px] text-slate-400 truncate">Boss DPS / Beam</div>
+            <div class="mt-1 text-[9px] text-amber-300 bg-amber-950/50 rounded py-0.5 border border-amber-500/30">Neu einsetzen</div>
+          </div>
+        </div>
+
+        <div class="bg-black/40 rounded-lg p-2 text-[11px] text-slate-300 border border-white/5">
+          <div class="flex items-start gap-1.5">
+            <i class="fa-solid fa-bullseye text-purple-400 mt-0.5 text-[10px]"></i>
+            <span><strong>Timing-Regel:</strong> Dougs Debuff muss auf dem Boss aktiv sein, <em>bevor</em> Grams Skills detonieren.</span>
+          </div>
+        </div>
       </div>
-      <div class="calc-total" id="calc-result">Gesamt: 0 Stunden (0,0 Tage)</div>
-    </div>
-  </div>
 
-  <script>
-    // Tab Navigation
-    function switchTab(tabId) {
-      document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById('tab-' + tabId).classList.add('active');
-      event.target.classList.add('active');
-    }
+      <!-- FLEET 3: FLOTTE SUSTAIN & UTILITY -->
+      <div class="glass-panel rounded-xl p-3 border-cyan-500/30 glow-cyan relative overflow-hidden">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center text-xs font-hud font-bold">3</span>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h2 class="font-hud font-bold text-cyan-400 text-sm tracking-wider">SUPPORT 2</h2>
+                <span class="text-[10px] px-1.5 py-0.2 bg-cyan-500/20 border border-cyan-500/40 rounded text-cyan-300 font-mono">LVL 28 • T3 +6</span>
+              </div>
+              <p class="text-[10px] text-slate-400">Team-Sustain & Stabilität</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-bold text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">
+            <i class="fa-solid fa-atom mr-1"></i>Ion
+          </span>
+        </div>
 
-    // Counter Database
-    const data = {
-      'Kinetic': {
-        win: 'Beam Flotten & Schilde',
-        lose: 'Ion Flotten & Armor',
-        tip: 'Kinetic setzt auf Rohe Schadensspitzen gegen Hülle. Nutze Beam-Schiffe mit starker Schild-Regeneration, um den Burst abzufangen.'
-      },
-      'Beam': {
-        win: 'Ion Flotten',
-        lose: 'Kinetic Flotten',
-        tip: 'Beam zerschmilzt Schilde kontinuierlich. Stelle auf Kinetic mit Burst-Modulen um, um ihre Schiffe auszuschalten, bevor deine Schilde fallen.'
-      },
-      'Ion': {
-        win: 'Kinetic Flotten',
-        lose: 'Beam Flotten',
-        tip: 'Ion durchdringt schwere Panzerung und stört Systeme. Kontere primär mit Beam-Waffen, da Ion gegen Dauerfeuer und Schildstärken verliert.'
-      }
-    };
+        <div class="grid grid-cols-3 gap-1.5 mb-2.5">
+          <!-- Ajita -->
+          <div class="glass-card p-2 rounded-lg border-cyan-500/40 bg-cyan-500/5 text-center">
+            <div class="text-[10px] text-cyan-400 font-bold mb-0.5">TOP HEAL</div>
+            <div class="font-bold text-xs text-white truncate">Ajita</div>
+            <div class="text-[9px] text-slate-400 truncate">Flotten-Sustain</div>
+            <div class="mt-1 text-[9px] text-cyan-300 bg-cyan-950/50 rounded py-0.5 border border-cyan-500/30">Von Gram</div>
+          </div>
+          <!-- Jodie -->
+          <div class="glass-card p-2 rounded-lg border-slate-700/80 text-center">
+            <div class="text-[10px] text-cyan-400 font-bold mb-0.5">ION DPS</div>
+            <div class="font-bold text-xs text-white truncate">Jodie Béart</div>
+            <div class="text-[9px] text-slate-400 truncate">Ion Utility & Dmg</div>
+            <div class="mt-1 text-[9px] text-emerald-400 bg-emerald-950/50 rounded py-0.5 border border-emerald-500/20">Aus Flotte 2</div>
+          </div>
+          <!-- Phade -->
+          <div class="glass-card p-2 rounded-lg border-slate-700/80 text-center">
+            <div class="text-[10px] text-cyan-400 font-bold mb-0.5">TEAM BUFF</div>
+            <div class="font-bold text-xs text-white truncate">Phade</div>
+            <div class="text-[9px] text-slate-400 truncate">Flotten-Stat Push</div>
+            <div class="mt-1 text-[9px] text-amber-300 bg-amber-950/50 rounded py-0.5 border border-amber-500/30">Neu einsetzen</div>
+          </div>
+        </div>
 
-    function showCounter(type) {
-      const info = data[type];
-      document.getElementById('enemy-title').innerText = 'Gegner: ' + type;
-      document.getElementById('counter-body').innerHTML = `
-        <div style="margin-bottom:6px;"><span class="pill pill-win">Effektiver Konter</span> <strong>${info.win}</strong></div>
-        <div style="margin-bottom:8px;"><span class="pill pill-lose">Vermeiden</span> ${info.lose}</div>
-        <p style="font-size:11px; line-height:1.3; color:#c9d1d9;">${info.tip}</p>
-      `;
-    }
+        <div class="bg-black/40 rounded-lg p-2 text-[11px] text-slate-300 border border-white/5">
+          <div class="flex items-start gap-1.5">
+            <i class="fa-solid fa-heart-pulse text-cyan-400 mt-0.5 text-[10px]"></i>
+            <span><strong>Überleben:</strong> Ajita heilt alle Flotten gegen die periodischen AoE-Wellen des Calamity-Bosses.</span>
+          </div>
+        </div>
+      </div>
 
-    // Timer Logic
-    const timers = {};
-    function formatTime(sec) {
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      const s = sec % 60;
-      if (h > 0) {
-        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-      }
-      return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
+      <!-- CHECKLISTE VOR DEM KAMPF -->
+      <div class="glass-card rounded-xl p-3 border-slate-800">
+        <h3 class="font-hud text-xs font-bold text-slate-300 mb-2 flex items-center gap-1.5">
+          <i class="fa-solid fa-clipboard-check text-cyan-400"></i> PRE-FIGHT CHECKLISTE
+        </h3>
+        <div class="space-y-1.5 text-xs">
+          <label class="flex items-center gap-2 p-1.5 rounded bg-slate-900/40 hover:bg-slate-900 cursor-pointer">
+            <input type="checkbox" class="rounded border-slate-700 text-cyan-500 focus:ring-0">
+            <span class="text-slate-300">Flotten-Reparatur auf 100% (Alle Jäger einsatzbereit)</span>
+          </label>
+          <label class="flex items-center gap-2 p-1.5 rounded bg-slate-900/40 hover:bg-slate-900 cursor-pointer">
+            <input type="checkbox" class="rounded border-slate-700 text-cyan-500 focus:ring-0">
+            <span class="text-slate-300">Eva & Killer Bee im Gram gesockelt</span>
+          </label>
+          <label class="flex items-center gap-2 p-1.5 rounded bg-slate-900/40 hover:bg-slate-900 cursor-pointer">
+            <input type="checkbox" class="rounded border-slate-700 text-cyan-500 focus:ring-0">
+            <span class="text-slate-300">Auto-Fire deaktiviert für manuelles Doug-Debuff-Timing</span>
+          </label>
+        </div>
+      </div>
 
-    function startTimer(id, defaultSec) {
-      if (timers[id]) clearInterval(timers[id].interval);
-      let rem = timers[id] ? timers[id].rem : defaultSec;
-      
-      timers[id] = {
-        rem: rem,
-        interval: setInterval(() => {
-          if (timers[id].rem > 0) {
-            timers[id].rem--;
-            document.getElementById('time-' + id).innerText = formatTime(timers[id].rem);
-          } else {
-            clearInterval(timers[id].interval);
-            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-            alert('Timer abgelaufen!');
-          }
-        }, 1000)
-      };
-    }
+    </section>
 
-    function resetTimer(id, defaultSec) {
-      if (timers[id]) clearInterval(timers[id].interval);
-      timers[id] = { rem: defaultSec, interval: null };
-      document.getElementById('time-' + id).innerText = formatTime(defaultSec);
-    }
+    <!-- ================= TAB 2: TOOLS & TIMERS ================= -->
+    <section id="tab-tools" class="space-y-3 hidden">
 
-    // Speedup Logic
-    function calcSpeedups() {
-      const d = parseFloat(document.getElementById('sp-d').value) || 0;
-      const h = parseFloat(document.getElementById('sp-h').value) || 0;
-      const m = parseFloat(document.getElementById('sp-m').value) || 0;
+      <!-- CALAMITY RUN STOPWATCH -->
+      <div class="glass-panel rounded-xl p-3 border-cyan-500/30">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="font-hud text-xs text-cyan-400 font-bold uppercase tracking-wider">Calamity Run Stopwatch</span>
+          <span id="run-status" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">BEREIT</span>
+        </div>
 
-      const totalHours = (d * 24) + h + (m / 60);
-      const totalDays = totalHours / 24;
+        <div class="text-center py-2">
+          <div id="stopwatch-display" class="font-hud text-3xl font-bold tracking-widest text-white drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]">
+            00:00.0
+          </div>
+        </div>
 
-      document.getElementById('calc-result').innerText = 
-        `Gesamt: ${totalHours.toFixed(1)} Std (${totalDays.toFixed(2)} Tage)`;
-    }
-  </script>
-</body>
-</html>
+        <div class="grid grid-cols-3 gap-1.5">
+          <button id="btn-start" onclick="startStopwatch()" class="py-2 bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold rounded-lg text-xs font-hud transition flex items-center justify-center gap-1">
+            <i class="fa-solid fa-play text-[10px]"></i> START
+          </button>
+          <button id="btn-pause" onclick="pauseStopwatch()" class="py-2 bg-amber-600 hover:bg-amber-500 active:scale-95 text-white font-bold rounded-lg text-xs font-hud transition flex items-center justify-center gap-1">
+            <i class="fa-solid fa-pause text-[10px]"></i> PAUSE
+          </button>
+          <button id="btn-reset" onclick="resetStopwatch()" class="py-2 bg-slate-700 hover:bg-slate-600 active:scale-95 text-white font-bold rounded-lg text-xs font-hud transition flex items-center justify-center gap-1">
+            <i class="fa-solid fa-rotate text-[10px]"></i> RESET
+          </button>
+        </div>
+      </div>
+
+      <!-- SERVER RESET COUNTDOWN -->
+      <div class="glass-card rounded-xl p-3 border-slate-800">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-earth-americas"></i>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-white block">Täglicher Server Reset (00:00 UTC)</span>
+              <span class="text-[10px] text-slate-400">Stam-Refill & Event-Zyklen</span>
+            </div>
+          </div>
+          <div id="utc-reset-countdown" class="font-mono text-sm font-bold text-cyan-400 bg-black/40 px-2 py-1 rounded border border-cyan-500/30">
+            --:--:--
+          </div>
+        </div>
+      </div>
+
+      <!-- ARMS RACE / EVENT PHASE TRACKER -->
+      <div class="glass-card rounded-xl p-3 border-slate-800">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold text-slate-300 font-hud">Event Phasentracker</span>
+          <span class="text-[10px] font-mono text-purple-400 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-500/30">4-Std Zyklus</span>
+        </div>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-400">Verbleibend in Phase:</span>
+            <span id="phase-countdown" class="font-mono font-bold text-amber-400">--:--</span>
+          </div>
+          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+            <div id="phase-progress" class="bg-gradient-to-r from-cyan-500 to-amber-500 h-1.5 transition-all duration-1000" style="width: 45%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK NOTES / SCRATCHPAD FOR DAMAGE LOG -->
+      <div class="glass-card rounded-xl p-3 border-slate-800">
+        <div class="flex justify-between items-center mb-1.5">
+          <label for="damage-notes" class="text-xs font-bold text-slate-300 font-hud flex items-center gap-1.5">
+            <i class="fa-solid fa-pen text-cyan-400"></i> Calamity Score Tracker
+          </label>
+          <button onclick="clearScoreLog()" class="text-[10px] text-rose-400 hover:underline">Löschen</button>
+        </div>
+        <textarea id="damage-notes" rows="2" placeholder="Not
