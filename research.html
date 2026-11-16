@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FGF Research Path Optimizer — [NW] Dpalmalito</title>
+  <style>
+    :root {
+      --bg: #0b111a;
+      --card: #131c2b;
+      --border: #25344d;
+      --text: #e6eef8;
+      --muted: #8fa3bf;
+      --accent: #38bdf8;
+      --gold: #f59e0b;
+      --green: #10b981;
+      --purple: #a855f7;
+      --red: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 16px; max-width: 1150px; margin: 0 auto; }
+    
+    header {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+      gap: 12px; margin-bottom: 18px; border-bottom: 1px solid var(--border); padding-bottom: 14px;
+    }
+    h1 { font-size: 1.35rem; color: #fff; }
+    .subtitle { font-size: 0.84rem; color: var(--muted); }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    select, button, input {
+      background: var(--card); color: var(--text); border: 1px solid var(--border);
+      padding: 7px 11px; border-radius: 8px; font-size: 0.84rem;
+    }
+    select, button { cursor: pointer; }
+    select:hover, button:hover { border-color: var(--accent); }
+    .btn-reset { color: var(--red); border-color: #7f1d1d; }
+
+    /* Inventar Leiste */
+    .inventory-bar {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 14px; margin-bottom: 18px;
+    }
+    .inv-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+    }
+    .inv-header h2 { font-size: 0.92rem; color: #fff; }
+    .inv-status { font-size: 0.78rem; color: var(--green); font-weight: 600; }
+    .inv-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;
+    }
+    .inv-item {
+      background: #0d1522; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .inv-label { font-size: 0.74rem; color: var(--muted); }
+    .inv-input-row { display: flex; align-items: center; gap: 6px; }
+    .inv-input-row input {
+      width: 100%; padding: 4px 7px; font-weight: 700; font-size: 0.88rem;
+      background: #131c2b; border-color: #334155; color: #fff;
+    }
+
+    /* Top Empfehlungen */
+    .top-recommendations {
+      background: linear-gradient(145deg, #132033, #0f1724);
+      border: 1px solid var(--accent); border-radius: 12px; padding: 16px; margin-bottom: 22px;
+    }
+    .top-recommendations h2 { font-size: 1rem; color: var(--accent); margin-bottom: 12px; }
+    .rec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; }
+    .rec-card {
+      background: rgba(11, 17, 26, 0.82); border: 1px solid var(--border); border-radius: 10px; padding: 12px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+    }
+    .rec-top { display: flex; justify-content: space-between; align-items: center; }
+    .rec-rank { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; color: var(--gold); }
+    .rec-ready { font-size: 0.72rem; padding: 2px 7px; border-radius: 99px; font-weight: 600; }
+    .ready-yes { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+    .ready-warn { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
+    .rec-title { font-size: 0.96rem; font-weight: 600; margin-top: 2px; }
+    .rec-tree { font-size: 0.78rem; color: var(--muted); }
+    .rec-reason { font-size: 0.8rem; color: #cbd5e1; line-height: 1.35; }
+    .rec-action {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border);
+    }
+
+    /* Tabs & Nodes */
+    .tree-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .tab {
+      background: var(--card); border: 1px solid var(--border); padding: 8px 14px; border-radius: 8px;
+      cursor: pointer; font-size: 0.84rem; font-weight: 600; transition: 0.15s;
+    }
+    .tab.active { background: var(--accent); color: #05101c; border-color: var(--accent); }
+    .tab span { font-weight: 400; opacity: 0.85; font-size: 0.78rem; margin-left: 4px; }
+
+    .nodes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(295px, 1fr)); gap: 12px; }
+    .node-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+    }
+    .node-card.maxed { border-color: #1e3a2f; opacity: 0.7; }
+    .node-card.active-slot { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.25); }
+    .node-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .node-name { font-weight: 600; font-size: 0.92rem; }
+    .badge { font-size: 0.7rem; padding: 2px 7px; border-radius: 999px; font-weight: 600; text-transform: uppercase; white-space: nowrap; }
+    .badge-kinetic { background: rgba(217, 119, 6, 0.2); color: #fbbf24; border: 1px solid rgba(217, 119, 6, 0.4); }
+    .badge-beam { background: rgba(2, 132, 199, 0.2); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4); }
+    .badge-ion { background: rgba(147, 51, 234, 0.2); color: #c084fc; border: 1px solid rgba(147, 51, 234, 0.4); }
+    .badge-meta { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-running { background: rgba(245, 158, 11, 0.22); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); }
+
+    .node-meta { font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
+    .node-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .lvl-text { font-weight: 700; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+    .btn-group { display: flex; gap: 6px; }
+    .btn-step { padding: 4px 10px; font-weight: 700; background: #1e293b; }
+    .btn-step:hover:not(:disabled) { background: var(--accent); color: #05101c; }
+    .btn-step:disabled { opacity: 0.35; cursor: not-allowed; }
+    .progress-bar { height: 6px; background: #0b111a; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); transition: width 0.2s; }
+    .node-card.maxed .progress-fill { background: var(--green); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>FGF Research Path Optimizer</h1>
+    <div class="subtitle">Server 1142 [NW] &bull; Meta-Gewichtung + Special-Inventar-Check</div>
+  </div>
+  <div class="controls">
+    <select id="focusStyle" title="Hauptschiffsklasse">
+      <option value="kinetic" selected>Fokus: Kinetic (Braun)</option>
+      <option value="beam">Fokus: Beam (Blau)</option>
+      <option value="ion">Fokus: Ion (Lila)</option>
+    </select>
+    <select id="goalMode" title="Strategie-Modus">
+      <option value="t7" selected>Modus: T7-Rush & Main-Flotte</option>
+      <option value="epoch">Modus: Core 33 & 4. Flotte (Epoch)</option>
+      <option value="event">Modus: Event-Lückenfüller (Quick)</option>
+    </select>
+    <button class="btn-reset" onclick="resetData()">Auf Screenshot-Stand zurücksetzen</button>
+  </div>
+</header>
+
+<section class="inventory-bar">
+  <div class="inv-header">
+    <h2>Forschungs- & Saison-Inventar (Special Tab)</h2>
+    <span class="inv-status" id="invSummary">Vorräte voll gedeckt &bull; Engpass: Nur Forschungszeit</span>
+  </div>
+  <div class="inv-grid" id="invGrid"></div>
+</section>
+
+<section class="top-recommendations">
+  <h2>Top-3 Empfehlungen (inkl. Material-Check)</h2>
+  <div class="rec-grid" id="recGrid"></div>
+</section>
+
+<div class="tree-tabs" id="treeTabs"></div>
+<div class="nodes-grid" id="nodesGrid"></div>
+
+<script>
+const INITIAL_INVENTORY = [
+  { id: "cores", label: "Atom-Kerne (Lila)", value: 30780 },
+  { id: "docs_gold", label: "Gold-Dokumente", value: 5717 },
+  { id: "docs_purple", label: "Lila-Dokumente", value: 4956 },
+  { id: "prism_purple", label: "Fusion-Prismen (Lila)", value: 4305 },
+  { id: "prism_teal", label: "Fusion-Prismen (Türkis)", value: 445 },
+  { id: "blueprints", label: "Schiffs-Baupläne", value: 784 }
+];
+
+const INITIAL_DATA = [
+  // 1. COMBAT CRAFT MODIFICATION (56.5%)
+  { id: "ccm_t7_kin", tree: "Combat Craft Modification", name: "T7 Gatekeeper: Kinetic (Braun)", current: 9, max: 10, style: "kinetic", tag: "T7-Unlock", reqMat: "docs_gold", minMat: 500, baseWeight: 100, note: "Nur 1 Stufe bis zur Freischaltung der T7 Kinetic-Schiffe!" },
+  { id: "ccm_t7_beam", tree: "Combat Craft Modification", name: "T7 Gatekeeper: Beam (Blau)", current: 6, max: 10, style: "beam", tag: "T7-Unlock", reqMat: "docs_gold", minMat: 500, baseWeight: 65, note: "Schaltet T7 Beam-Einheiten frei (nach Main-Typ pushen)." },
+  { id: "ccm_t7_ion", tree: "Combat Craft Modification", name: "T7 Gatekeeper: Ion (Lila)", current: 4, max: 10, style: "ion", tag: "T7-Unlock", reqMat: "docs_gold", minMat: 500, baseWeight: 55, note: "Schaltet T7 Ion-Einheiten frei." },
+  { id: "ccm_dmg_red", tree: "Combat Craft Modification", name: "Zentral: Combat Craft Damage (Rot)", current: 7, max: 10, style: "all", tag: "Core-Stat", reqMat: "docs_purple", minMat: 400, baseWeight: 82, note: "Direkter Schadensmultiplikator für alle Kampfschiffe." },
+  { id: "ccm_gold_mid", tree: "Combat Craft Modification", name: "Zentral: Advanced Craft Mastery (Gold)", current: 7, max: 10, style: "all", tag: "T7-Voraussetzung", reqMat: "docs_gold", minMat: 450, baseWeight: 85, note: "Pflichtknoten direkt über den T7-Gatekeepern." },
+  { id: "ccm_kin_atk", tree: "Combat Craft Modification", name: "Kinetic Attack & Energy (Oben)", current: 8, max: 10, style: "kinetic", tag: "Main-DPS", reqMat: "docs_purple", minMat: 350, baseWeight: 78, note: "Stärkt deine braune Hauptklasse." },
+  { id: "ccm_kin_hp", tree: "Combat Craft Modification", name: "Kinetic HP (Mitte)", current: 9, max: 10, style: "kinetic", tag: "HP is King", reqMat: "docs_purple", minMat: 350, baseWeight: 84, note: "Noch 1 Stufe bis Max – erhöht Frontline-Überleben." },
+  { id: "ccm_def_blue", tree: "Combat Craft Modification", name: "Zentral: Combat Craft Defense (Blau)", current: 4, max: 10, style: "all", tag: "Gatekeeper", reqMat: "docs_purple", minMat: 300, baseWeight: 70, note: "Verbindet oberen und unteren Baumabschnitt." },
+
+  // 2. ECONOMY & DEVELOPMENT (57.57%)
+  { id: "eco_res4", tree: "Economy & Development", name: "Forschungsgeschwindigkeit IV", current: 3, max: 4, style: "all", tag: "Time-Saver", reqMat: "cores", minMat: 1200, baseWeight: 96, note: "1 Stufe fehlt! Verkürzt dauerhaft alle kommenden Forschungen." },
+  { id: "eco_res5", tree: "Economy & Development", name: "Forschungsgeschwindigkeit V", current: 1, max: 5, style: "all", tag: "Time-Saver", reqMat: "cores", minMat: 2000, baseWeight: 88, note: "Starker Langzeit-Hebel (Cutting Edge Instruments T5)." },
+  { id: "eco_food4", tree: "Economy & Development", name: "Nahrungsproduktion IV", current: 3, max: 4, style: "all", tag: "Eco", reqMat: "cores", minMat: 800, baseWeight: 35, note: "Optionaler Ressourcen-Boost." },
+  { id: "eco_cap4", tree: "Economy & Development", name: "Lagerkapazität & Schutz IV", current: 1, max: 4, style: "all", tag: "Eco", reqMat: "cores", minMat: 900, baseWeight: 30, note: "Nur bei Ressourcen-Engpässen nötig." },
+  { id: "eco_build5", tree: "Economy & Development", name: "Baugeschwindigkeit V", current: 1, max: 5, style: "all", tag: "Eco", reqMat: "cores", minMat: 1800, baseWeight: 55, note: "Hilfreich für Core 31–35 Ausbauten." },
+
+  // 3. FLAGSHIPS & COMBAT CRAFT (52.67%)
+  { id: "fcc_b3_kin_def", tree: "Flagships & Combat Craft", name: "Block 3: Kinetic Defense (Braun)", current: 3, max: 4, style: "kinetic", tag: "Main-Fleet", reqMat: "cores", minMat: 1500, baseWeight: 76, note: "Noch 1 Stufe bis 4/4." },
+  { id: "fcc_b3_kin_eng", tree: "Flagships & Combat Craft", name: "Block 3: Kinetic Energy (Braun)", current: 2, max: 4, style: "kinetic", tag: "Main-Fleet", reqMat: "cores", minMat: 1500, baseWeight: 74, note: "Wichtig für Skill-Schaden deiner Main-Flotte." },
+  { id: "fcc_b3_beam_eng", tree: "Flagships & Combat Craft", name: "Block 3: Beam Energy (Slot 1 aktiv)", current: 1, max: 4, style: "beam", tag: "Aktiv", running: true, reqMat: "cores", minMat: 1500, baseWeight: 62, note: "Läuft aktuell in Forschungsslot 1." },
+  { id: "fcc_b3_ion_atk", tree: "Flagships & Combat Craft", name: "Block 3: Ion Attack (Slot 2 aktiv)", current: 2, max: 4, style: "ion", tag: "Aktiv", running: true, reqMat: "cores", minMat: 1500, baseWeight: 60, note: "Läuft aktuell in Forschungsslot 2." },
+  { id: "fcc_b3_fleet", tree: "Flagships & Combat Craft", name: "Block 3: Fleet Defense / Attack / Energy", current: 1, max: 4, style: "all", tag: "Flotten-Basis", reqMat: "cores", minMat: 1600, baseWeight: 72, note: "Wirkt auf alle deine Flotten gleichzeitig." },
+  { id: "fcc_b4_hp", tree: "Flagships & Combat Craft", name: "Block 4: Fleet HP (T5 Basis)", current: 1, max: 5, style: "all", tag: "HP is King", reqMat: "cores", minMat: 2200, baseWeight: 86, note: "Laut Meta der wichtigste Combat-Stat im Lategame." },
+
+  // 4. EPOCH OF FUSION SEED (22.56%)
+  { id: "epo_core2", tree: "Epoch of Fusion Seed", name: "Zentral: Fusion Seed Mastery II", current: 6, max: 10, style: "all", tag: "Core 33 Pfad", reqMat: "prism_purple", minMat: 400, baseWeight: 89, note: "Schaltet den unteren Baumabschnitt Richtung Reaktoren & Core 35 frei." },
+  { id: "epo_res_spd", tree: "Epoch of Fusion Seed", name: "Saison-Forschungsgeschwindigkeit", current: 2, max: 10, style: "all", tag: "Time-Saver", reqMat: "prism_purple", minMat: 300, baseWeight: 83, note: "Beschleunigt teure Epoch-Forschungen." },
+  { id: "epo_bld_spd", tree: "Epoch of Fusion Seed", name: "Saison-Baugeschwindigkeit", current: 3, max: 10, style: "all", tag: "Core 33 Pfad", reqMat: "prism_purple", minMat: 300, baseWeight: 77, note: "Verkürzt Core 31–35 Slot-Upgrades." },
+  { id: "epo_seeds", tree: "Epoch of Fusion Seed", name: "Fusion Seed Ressourcen-Output", current: 5, max: 10, style: "all", tag: "Seed-Ökonomie", reqMat: "prism_purple", minMat: 250, baseWeight: 75, note: "Sichert Nachschub für weitere Epoch-Stufen." },
+  { id: "epo_final", tree: "Epoch of Fusion Seed", name: "Fusion Power Systems (Endknoten)", current: 0, max: 1, style: "all", tag: "Core 35 Cap", reqMat: "prism_teal", minMat: 200, baseWeight: 92, note: "Erhöht Energy Core Cap auf Lvl 35 (Core 33 = 4. Battle Queue!)." },
+
+  // 5. COMMERCE GUILD DUEL (92.95%)
+  { id: "cgd_mid", tree: "Commerce Guild Duel", name: "Zentral: Mobilization / Duel Bonus", current: 17, max: 20, style: "all", tag: "Event-Filler", reqMat: "cores", minMat: 800, baseWeight: 42, note: "Alle 9 Truhen frei – ideal für schnelle Event-Punkte." },
+  { id: "cgd_bot1", tree: "Commerce Guild Duel", name: "GvG Kampf-Angriff (Unten Links)", current: 8, max: 10, style: "all", tag: "Event-Filler", reqMat: "cores", minMat: 900, baseWeight: 38, note: "Kurze Laufzeit für Arms Race / Guild Duel." },
+  { id: "cgd_bot2", tree: "Commerce Guild Duel", name: "GvG Kampf-Schaden (Unten Mitte)", current: 8, max: 10, style: "all", tag: "Event-Filler", reqMat: "cores", minMat: 900, baseWeight: 38, note: "Kurze Laufzeit für Arms Race / Guild Duel." },
+  { id: "cgd_bot3", tree: "Commerce Guild Duel", name: "GvG Kampf-Verteidigung (Unten Rechts)", current: 7, max: 10, style: "all", tag: "Event-Filler", reqMat: "cores", minMat: 900, baseWeight: 36, note: "Kurze Laufzeit für Arms Race / Guild Duel." }
+];
+
+let nodes = JSON.parse(localStorage.getItem("fgf_research_nodes_v2")) || structuredClone(INITIAL_DATA);
+let inventory = JSON.parse(localStorage.getItem("fgf_research_inv_v2")) || structuredClone(INITIAL_INVENTORY);
+let activeTree = "Alle";
+
+function saveState() {
+  localStorage.setItem("fgf_research_nodes_v2", JSON.stringify(nodes));
+  localStorage.setItem("fgf_research_inv_v2", JSON.stringify(inventory));
+}
+
+function resetData() {
+  nodes = structuredClone(INITIAL_DATA);
+  inventory = structuredClone(INITIAL_INVENTORY);
+  saveState();
+  render();
+}
+
+function updateInv(id, val) {
+  const item = inventory.find(x => x.id === id);
+  if (!item) return;
+  item.value = Math.max(0, parseInt(val, 10) || 0);
+  saveState();
+  renderRecommendations();
+}
+
+function hasEnoughMat(node) {
+  const item = inventory.find(x => x.id === node.reqMat);
+  if (!item) return { ok: true, label: "Material OK" };
+  return item.value >= node.minMat
+    ? { ok: true, label: `${item.label}: ${item.value.toLocaleString("de-DE")} (OK)` }
+    : { ok: false, label: `${item.label} knapp (${item.value.toLocaleString("de-DE")})` };
+}
+
+function calculateScore(node) {
+  if (node.current >= node.max || node.running) return -1;
+  const focus = document.getElementById("focusStyle").value;
+  const mode = document.getElementById("goalMode").value;
+  let score = node.baseWeight;
+
+  if (node.style === focus) score += 18;
+  else if (node.style !== "all") score -= 12;
+
+  if (mode === "t7") {
+    if (node.tree === "Combat Craft Modification") score += 15;
+    if (node.tag === "HP is King") score += 10;
+  } else if (mode === "epoch") {
+    if (node.tree === "Epoch of Fusion Seed") score += 25;
+    if (node.id === "eco_res4" || node.id === "eco_res5") score += 12;
+  } else if (mode === "event") {
+    if (node.tree === "Commerce Guild Duel") score += 45;
+    if (node.max - node.current === 1) score += 20;
+  }
+
+  if (node.max - node.current === 1) score += 10;
+  if (!hasEnoughMat(node).ok) score -= 25;
+
+  return score;
+}
+
+function updateLevel(id, delta) {
+  const n = nodes.find(x => x.id === id);
+  if (!n) return;
+  n.current = Math.max(0, Math.min(n.max, n.current + delta));
+  if (delta > 0 && n.running) n.running = false;
+  saveState();
+  render();
+}
+
+function renderInventory() {
+  const invGrid = document.getElementById("invGrid");
+  invGrid.innerHTML = inventory.map(i => `
+    <div class="inv-item">
+      <span class="inv-label">${i.label}</span>
+      <div class="inv-input-row">
+        <input type="number" min="0" value="${i.value}" onchange="updateInv('${i.id}', this.value)" />
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderRecommendations() {
+  const ranked = [...nodes]
+    .map(n => ({ ...n, score: calculateScore(n), mat: hasEnoughMat(n) }))
+    .filter(n => n.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  const recGrid = document.getElementById("recGrid");
+  recGrid.innerHTML = ranked.map((r, idx) => `
+    <div class="rec-card">
+      <div>
+        <div class="rec-top">
+          <span class="rec-rank">Empfehlung #${idx + 1} &bull; Score ${r.score}</span>
+          <span class="rec-ready ${r.mat.ok ? 'ready-yes' : 'ready-warn'}">${r.mat.ok ? 'Sofort startbar' : 'Material prüfen'}</span>
+        </div>
+        <div class="rec-title">${r.name}</div>
+        <div class="rec-tree">${r.tree} &bull; ${r.mat.label}</div>
+      </div>
+      <div class="rec-reason">${r.note}</div>
+      <div class="rec-action">
+        <span class="lvl-text">Stufe: ${r.current} / ${r.max}</span>
+        <button class="btn-step" onclick="updateLevel('${r.id}', 1)">+1 Stufe abschließen</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function render() {
+  renderInventory();
+  renderRecommendations();
+
+  const trees = ["Alle", ...new Set(nodes.map(n => n.tree))];
+  const tabsEl = document.getElementById("treeTabs");
+  tabsEl.innerHTML = trees.map(t => {
+    const subset = t === "Alle" ? nodes : nodes.filter(n => n.tree === t);
+    const done = subset.reduce((s, n) => s + n.current, 0);
+    const total = subset.reduce((s, n) => s + n.max, 0);
+    const pct = Math.round((done / total) * 100);
+    return `<div class="tab ${activeTree === t ? 'active' : ''}" onclick="activeTree='${t}'; render();">
+      ${t} <span>(${pct}%)</span>
+    </div>`;
+  }).join("");
+
+  const visible = activeTree === "Alle" ? nodes : nodes.filter(n => n.tree === activeTree);
+  const grid = document.getElementById("nodesGrid");
+  grid.innerHTML = visible.map(n => {
+    const isMaxed = n.current >= n.max;
+    const pct = (n.current / n.max) * 100;
+    const badge = n.running
+      ? `<span class="badge badge-running">Läuft gerade</span>`
+      : n.style !== "all"
+        ? `<span class="badge badge-${n.style}">${n.style}</span>`
+        : `<span class="badge badge-meta">${n.tag}</span>`;
+
+    return `
+      <div class="node-card ${isMaxed ? 'maxed' : ''} ${n.running ? 'active-slot' : ''}">
+        <div>
+          <div class="node-header">
+            <div class="node-name">${n.name}</div>
+            ${badge}
+          </div>
+          <div class="node-meta" style="margin-top:4px;">${n.tree} &bull; ${n.note}</div>
+        </div>
+        <div>
+          <div class="progress-bar" style="margin-bottom:8px;">
+            <div class="progress-fill" style="width:${pct}%"></div>
+          </div>
+          <div class="node-controls">
+            <span class="lvl-text">${isMaxed ? 'MAXED' : `${n.current} / ${n.max}`}</span>
+            <div class="btn-group">
+              <button class="btn-step" onclick="updateLevel('${n.id}', -1)" ${n.current <= 0 ? 'disabled' : ''}>-</button>
+              <button class="btn-step" onclick="updateLevel('${n.id}', 1)" ${isMaxed ? 'disabled' : ''}>+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+document.getElementById("focusStyle").addEventListener("change", render);
+document.getElementById("goalMode").addEventListener("change", render);
+render();
+</script>
+</body>
+</html>
