@@ -18,7 +18,7 @@
       --red: #f87171;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding: 16px; max-width: 1180px; margin: 0 auto; }
+    body { background: var(--bg); color: var(--text); padding: 16px; max-width: 1200px; margin: 0 auto; }
 
     header {
       display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
@@ -35,9 +35,9 @@
     select:hover, button:hover { border-color: var(--accent); }
     .btn-reset { color: var(--red); border-color: #7f1d1d; }
 
-    /* Gatekeeper Banner (80% Unlock + Core 33) */
+    /* Gatekeeper Banner */
     .milestones-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 18px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px; margin-bottom: 16px;
     }
     .milestone-card {
       background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px;
@@ -45,13 +45,13 @@
     .ms-top { display: flex; justify-content: space-between; font-size: 0.84rem; font-weight: 600; margin-bottom: 6px; }
     .ms-sub { font-size: 0.76rem; color: var(--muted); margin-top: 6px; }
 
-    /* Inventar Leiste */
+    /* Ressourcen & Inventar Leiste */
     .inventory-bar {
       background: var(--card); border: 1px solid var(--border); border-radius: 12px;
       padding: 12px 14px; margin-bottom: 18px;
     }
-    .inv-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .inv-header h2 { font-size: 0.9rem; color: #fff; }
+    .inv-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .inv-header h2 { font-size: 0.92rem; color: #fff; }
     .inv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 8px; }
     .inv-item {
       background: #0d1522; border: 1px solid var(--border); border-radius: 8px; padding: 7px 9px;
@@ -59,7 +59,7 @@
     }
     .inv-label { font-size: 0.72rem; color: var(--muted); }
     .inv-item input {
-      width: 100%; padding: 3px 6px; font-weight: 700; font-size: 0.86rem;
+      width: 100%; padding: 4px 6px; font-weight: 700; font-size: 0.86rem;
       background: #131c2b; border-color: #334155; color: #fff;
     }
 
@@ -69,19 +69,23 @@
       border: 1px solid var(--accent); border-radius: 12px; padding: 16px; margin-bottom: 20px;
     }
     .top-recommendations h2 { font-size: 1rem; color: var(--accent); margin-bottom: 12px; }
-    .rec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+    .rec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 12px; }
     .rec-card {
-      background: rgba(11, 17, 26, 0.85); border: 1px solid var(--border); border-radius: 10px; padding: 12px;
+      background: rgba(11, 17, 26, 0.88); border: 1px solid var(--border); border-radius: 10px; padding: 12px;
       display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
     }
     .rec-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
     .rec-rank { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; color: var(--gold); }
     .rec-ready { font-size: 0.71rem; padding: 2px 7px; border-radius: 99px; font-weight: 600; }
     .ready-yes { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
-    .ready-warn { background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); }
+    .ready-warn { background: rgba(248, 113, 113, 0.18); color: #fca5a5; border: 1px solid rgba(248, 113, 113, 0.4); }
     .rec-title { font-size: 0.96rem; font-weight: 600; margin-top: 2px; }
     .rec-tree { font-size: 0.76rem; color: var(--muted); }
-    .rec-unlocks { font-size: 0.76rem; color: #38bdf8; margin-top: 2px; }
+    .rec-cost {
+      font-size: 0.75rem; padding: 5px 8px; border-radius: 6px; margin-top: 4px;
+      background: #0d1522; border: 1px solid var(--border); color: #cbd5e1;
+    }
+    .rec-cost.missing { border-color: rgba(248, 113, 113, 0.45); color: #fca5a5; }
     .rec-reason { font-size: 0.8rem; color: #cbd5e1; line-height: 1.35; }
     .rec-action {
       display: flex; justify-content: space-between; align-items: center;
@@ -97,13 +101,13 @@
     .tab.active { background: var(--accent); color: #05101c; border-color: var(--accent); }
     .tab span { font-weight: 400; opacity: 0.85; font-size: 0.76rem; margin-left: 4px; }
 
-    .nodes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+    .nodes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; }
     .node-card {
       background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px;
       display: flex; flex-direction: column; justify-content: space-between; gap: 9px;
     }
     .node-card.maxed { border-color: #1e3a2f; opacity: 0.7; }
-    .node-card.locked { opacity: 0.55; border-style: dashed; border-color: #475569; }
+    .node-card.locked { opacity: 0.58; border-style: dashed; border-color: #475569; }
     .node-card.active-slot { border-color: var(--gold); box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.25); }
     .node-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
     .node-name { font-weight: 600; font-size: 0.91rem; }
@@ -119,10 +123,11 @@
       font-size: 0.74rem; padding: 5px 8px; border-radius: 6px;
       background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.25); color: #fca5a5;
     }
-    .unlock-box {
-      font-size: 0.74rem; padding: 4px 8px; border-radius: 6px;
-      background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.22); color: #7dd3fc;
+    .cost-box {
+      font-size: 0.74rem; padding: 5px 8px; border-radius: 6px;
+      background: #0d1522; border: 1px solid var(--border); color: #cbd5e1;
     }
+    .cost-box.shortage { border-color: rgba(248, 113, 113, 0.45); color: #fca5a5; }
     .node-meta { font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
     .node-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     .lvl-text { font-weight: 700; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
@@ -140,7 +145,7 @@
 <header>
   <div>
     <h1>FGF Research Path Optimizer</h1>
-    <div class="subtitle">Server 1142 [NW] &bull; Mit Abhängigkeits-Logik (DAG), 80%-Unlock-Tracker &amp; Inventar</div>
+    <div class="subtitle">Server 1142 [NW] &bull; Mit echten Ressourcen-Kosten (Metall/Wasser/Credits/Kerne) &amp; Gatekeepern</div>
   </div>
   <div class="controls">
     <select id="focusStyle" title="Hauptschiffsklasse">
@@ -161,14 +166,14 @@
 
 <section class="inventory-bar">
   <div class="inv-header">
-    <h2>Forschungs- &amp; Saison-Inventar (Special Tab)</h2>
-    <span style="font-size:0.78rem; color:var(--green); font-weight:600;">30.780 Kerne &bull; 10.673 Dokumente (Kein Ressourcen-Engpass)</span>
+    <h2>Aktuelle Ressourcen &amp; Forschungs-Materialien (Oben im Screen)</h2>
+    <span style="font-size:0.77rem; color:var(--gold);">Tipp: Wasser (34,67M) &amp; Metall (32,88M) reichen für Gatekeeper 10/10, für T7 Warframe fehlen je ~9M!</span>
   </div>
   <div class="inv-grid" id="invGrid"></div>
 </section>
 
 <section class="top-recommendations">
-  <h2>Top-3 Empfehlungen (nur freigeschaltete &amp; erfüllbare Knoten)</h2>
+  <h2>Top-3 Empfehlungen (inkl. Ressourcen- &amp; Engpass-Check)</h2>
   <div class="rec-grid" id="recGrid"></div>
 </section>
 
@@ -176,65 +181,60 @@
 <div class="nodes-grid" id="nodesGrid"></div>
 
 <script>
+// Exakte Bestände aus deinem aktuellen Screenshot (29327.png + Special Tab)
 const INITIAL_INVENTORY = [
-  { id: "cores", label: "Atom-Kerne (Lila)", value: 30780 },
-  { id: "docs_gold", label: "Gold-Dokumente", value: 5717 },
-  { id: "docs_purple", label: "Lila-Dokumente", value: 4956 },
-  { id: "prism_purple", label: "Fusion-Prismen (Lila)", value: 4305 },
-  { id: "prism_teal", label: "Fusion-Prismen (Türkis)", value: 445 },
-  { id: "blueprints", label: "Schiffs-Baupläne", value: 784 }
+  { id: "water", label: "Wasser (Mio.)", value: 34.67, step: 0.5 },
+  { id: "metal", label: "Metall (Mio.)", value: 32.88, step: 0.5 },
+  { id: "credits", label: "Credits / Gold (Mio.)", value: 83.16, step: 1 },
+  { id: "cores", label: "Atom-Kerne (K)", value: 30.78, step: 0.5 },
+  { id: "prism_purple", label: "Fusion-Prismen", value: 4305, step: 100 },
+  { id: "blueprints", label: "Baupläne", value: 784, step: 10 }
 ];
 
-// Jede Node hat jetzt echte Voraussetzungen (requires) und Freischalt-Ziele (unlocks)
+// Kosten in Mio. (water, metal, credits) & K (cores) — basierend auf echten In-Game-Werten (z.B. Warframe: 43M Metall, 43M Wasser, 34M Credits, 10K Kerne)
 const INITIAL_DATA = [
-  // 1. COMBAT CRAFT MODIFICATION (Start: 56.5% -> Ziel: 80% schaltet 3 Specialization Trees frei!)
-  { id: "ccm_kin_atk", tree: "Combat Craft Modification", name: "Kinetic Attack & Energy (Oben)", current: 8, max: 10, style: "kinetic", tag: "Main-DPS", reqMat: "docs_purple", minMat: 350, requires: [], unlocks: "Zentral: Combat Craft Damage (Rot)", baseWeight: 78, note: "Stärkt deine braune Hauptklasse & treibt CCM Richtung 80%." },
-  { id: "ccm_dmg_red", tree: "Combat Craft Modification", name: "Zentral: Combat Craft Damage (Rot)", current: 7, max: 10, style: "all", tag: "Core-Stat", reqMat: "docs_purple", minMat: 400, requires: [{ id: "ccm_kin_atk", lvl: 5 }], unlocks: "Mittlerer Defense-Block", baseWeight: 82, note: "Direkter Schadensmultiplikator für alle Kampfschiffe." },
-  { id: "ccm_kin_hp", tree: "Combat Craft Modification", name: "Kinetic HP (Mitte)", current: 9, max: 10, style: "kinetic", tag: "HP is King", reqMat: "docs_purple", minMat: 350, requires: [{ id: "ccm_dmg_red", lvl: 5 }], unlocks: "Zentral: Defense (Blau)", baseWeight: 84, note: "Noch 1 Stufe bis Max – erhöht Frontline-Überleben." },
-  { id: "ccm_def_blue", tree: "Combat Craft Modification", name: "Zentral: Combat Craft Defense (Blau)", current: 4, max: 10, style: "all", tag: "Gatekeeper", reqMat: "docs_purple", minMat: 300, requires: [{ id: "ccm_kin_hp", lvl: 5 }], unlocks: "Unterer T7-Sektor", baseWeight: 74, note: "Verbindet oberen und unteren Baumabschnitt & bringt CCM-% hoch." },
-  { id: "ccm_gold_mid", tree: "Combat Craft Modification", name: "Zentral: Advanced Craft Mastery (Gold)", current: 7, max: 10, style: "all", tag: "T7-Voraussetzung", reqMat: "docs_gold", minMat: 450, requires: [{ id: "ccm_def_blue", lvl: 4 }], unlocks: "Alle 3 T7-Gatekeeper", baseWeight: 85, note: "Pflichtknoten direkt über den T7-Gatekeepern." },
-  { id: "ccm_t7_kin", tree: "Combat Craft Modification", name: "T7 Gatekeeper: Kinetic (Braun)", current: 9, max: 10, style: "kinetic", tag: "T7-Unlock", reqMat: "docs_gold", minMat: 500, requires: [{ id: "ccm_gold_mid", lvl: 5 }], unlocks: "T7 Kinetic Kampfschiffe", baseWeight: 100, note: "Nur 1 Stufe bis zur Freischaltung der T7 Kinetic-Schiffe!" },
-  { id: "ccm_t7_unit_kin", tree: "Combat Craft Modification", name: "T7 Kinetic Combat Craft (Einheit)", current: 0, max: 1, style: "kinetic", tag: "T7-Einheit", reqMat: "blueprints", minMat: 200, requires: [{ id: "ccm_t7_kin", lvl: 10 }], unlocks: "Bau & Einsatz von T7 Kinetic", baseWeight: 105, note: "Wird exakt in dem Moment frei, wenn T7 Gatekeeper auf 10/10 steht!" },
-  { id: "ccm_t7_beam", tree: "Combat Craft Modification", name: "T7 Gatekeeper: Beam (Blau)", current: 6, max: 10, style: "beam", tag: "T7-Unlock", reqMat: "docs_gold", minMat: 500, requires: [{ id: "ccm_gold_mid", lvl: 5 }], unlocks: "T7 Beam Kampfschiffe", baseWeight: 66, note: "Hilft nach T7 Kinetic beim Erreichen der 80% Baum-Schwelle." },
-  { id: "ccm_t7_ion", tree: "Combat Craft Modification", name: "T7 Gatekeeper: Ion (Lila)", current: 4, max: 10, style: "ion", tag: "T7-Unlock", reqMat: "docs_gold", minMat: 500, requires: [{ id: "ccm_gold_mid", lvl: 5 }], unlocks: "T7 Ion Kampfschiffe", baseWeight: 60, note: "Günstige Stufen für schnellen CCM-% Fortschritt Richtung 80%." },
+  // 1. COMBAT CRAFT MODIFICATION
+  { id: "ccm_kin_atk", tree: "Combat Craft Modification", name: "Kinetic Attack & Energy (Oben)", current: 8, max: 10, style: "kinetic", tag: "Main-DPS", cost: { metal: 12, water: 12, credits: 10, cores: 2.5 }, requires: [], unlocks: "Combat Craft Damage (Rot)", baseWeight: 78, note: "Stärkt deine braune Hauptklasse & treibt CCM Richtung 80%." },
+  { id: "ccm_dmg_red", tree: "Combat Craft Modification", name: "Zentral: Combat Craft Damage (Rot)", current: 7, max: 10, style: "all", tag: "Core-Stat", cost: { metal: 14, water: 14, credits: 12, cores: 3.0 }, requires: [{ id: "ccm_kin_atk", lvl: 5 }], unlocks: "Mittlerer Defense-Block", baseWeight: 82, note: "Direkter Schadensmultiplikator für alle Kampfschiffe." },
+  { id: "ccm_kin_hp", tree: "Combat Craft Modification", name: "Kinetic HP (Mitte)", current: 9, max: 10, style: "kinetic", tag: "HP is King", cost: { metal: 15, water: 15, credits: 12, cores: 3.2 }, requires: [{ id: "ccm_dmg_red", lvl: 5 }], unlocks: "Zentral: Defense (Blau)", baseWeight: 84, note: "Noch 1 Stufe bis Max – erhöht Frontline-Überleben." },
+  { id: "ccm_def_blue", tree: "Combat Craft Modification", name: "Zentral: Combat Craft Defense (Blau)", current: 4, max: 10, style: "all", tag: "Gatekeeper", cost: { metal: 10, water: 10, credits: 8, cores: 2.0 }, requires: [{ id: "ccm_kin_hp", lvl: 5 }], unlocks: "Unterer T7-Sektor", baseWeight: 74, note: "Verbindet oberen und unteren Baumabschnitt & bringt CCM-% hoch." },
+  { id: "ccm_gold_mid", tree: "Combat Craft Modification", name: "Zentral: Advanced Craft Mastery (Gold)", current: 7, max: 10, style: "all", tag: "T7-Voraussetzung", cost: { metal: 18, water: 18, credits: 15, cores: 4.0 }, requires: [{ id: "ccm_def_blue", lvl: 4 }], unlocks: "Assembly Line Optimization", baseWeight: 85, note: "Pflichtknoten direkt über den T7-Gatekeepern." },
+  { id: "ccm_t7_kin", tree: "Combat Craft Modification", name: "Assembly Line Optimization - Kinetic", current: 9, max: 10, style: "kinetic", tag: "T7-Gatekeeper", cost: { metal: 24, water: 24, credits: 20, cores: 5.5 }, requires: [{ id: "ccm_gold_mid", lvl: 5 }], unlocks: "WARFRAME (T7 Kinetic Craft)", baseWeight: 100, note: "Letzte Stufe (9/10 -> 10/10) vor WARFRAME! Ressourcen reichen aktuell genau aus." },
+  { id: "ccm_t7_unit_kin", tree: "Combat Craft Modification", name: "WARFRAME (Unlocks T7 Kinetic Combat Craft)", current: 0, max: 1, style: "kinetic", tag: "+250K Power", cost: { metal: 43, water: 43, credits: 34, cores: 10.0 }, requires: [{ id: "ccm_t7_kin", lvl: 10 }], unlocks: "T7 Kinetic Kampfschiffe (+250.000 Power)", baseWeight: 108, note: "Benötigt Lvl 10 Assembly Line + 43M Metall, 43M Wasser, 34M Credits, 10K Kerne." },
+  { id: "ccm_t7_beam", tree: "Combat Craft Modification", name: "Assembly Line Optimization - Beam", current: 6, max: 10, style: "beam", tag: "80%-Push", cost: { metal: 16, water: 16, credits: 14, cores: 3.5 }, requires: [{ id: "ccm_gold_mid", lvl: 5 }], unlocks: "T7 Beam Craft", baseWeight: 66, note: "Hilft nach WARFRAME beim Erreichen der 80% Baum-Schwelle." },
+  { id: "ccm_t7_ion", tree: "Combat Craft Modification", name: "Assembly Line Optimization - Ion", current: 4, max: 10, style: "ion", tag: "80%-Push", cost: { metal: 12, water: 12, credits: 10, cores: 2.5 }, requires: [{ id: "ccm_gold_mid", lvl: 5 }], unlocks: "T7 Ion Craft", baseWeight: 62, note: "Günstige Stufen für schnellen CCM-% Fortschritt Richtung 80%." },
 
-  // 2. ECONOMY & DEVELOPMENT (Start: 57.57%)
-  { id: "eco_res4", tree: "Economy & Development", name: "Forschungsgeschwindigkeit IV", current: 3, max: 4, style: "all", tag: "Time-Saver", reqMat: "cores", minMat: 1200, requires: [], unlocks: "Lagerkapazität IV (Pflicht für Tier 5)", baseWeight: 96, note: "1 Stufe fehlt! Muss auf 4/4, um Tier 4 komplett abzuschließen." },
-  { id: "eco_food4", tree: "Economy & Development", name: "Nahrungsproduktion IV", current: 3, max: 4, style: "all", tag: "Eco", reqMat: "cores", minMat: 800, requires: [], unlocks: "Lagerkapazität IV", baseWeight: 45, note: "Optionaler Ressourcen-Boost (1 Stufe offen)." },
-  { id: "eco_cap4", tree: "Economy & Development", name: "Lagerkapazität & Schutz IV", current: 1, max: 4, style: "all", tag: "Gatekeeper", reqMat: "cores", minMat: 900, requires: [{ id: "eco_res4", lvl: 4 }], unlocks: "Tier 5 (Forschungsgeschwindigkeit V)", baseWeight: 68, note: "Muss auf 4/4 gezogen werden, bevor Tier 5 weiter hochgelevelt werden kann." },
-  { id: "eco_res5", tree: "Economy & Development", name: "Forschungsgeschwindigkeit V", current: 1, max: 5, style: "all", tag: "Time-Saver", reqMat: "cores", minMat: 2000, requires: [{ id: "eco_cap4", lvl: 4 }], unlocks: "Maximale Forschungsgeschwindigkeit", baseWeight: 90, note: "Wird für Stufen 2–5 frei, sobald Tier 4 darüber durchgeschaltet ist." },
-  { id: "eco_build5", tree: "Economy & Development", name: "Baugeschwindigkeit V", current: 1, max: 5, style: "all", tag: "Eco", reqMat: "cores", minMat: 1800, requires: [{ id: "eco_cap4", lvl: 4 }], unlocks: "Schnellere Core 31–35 Upgrades", baseWeight: 62, note: "Hilfreich für Core 31–35 Ausbauten." },
+  // 2. ECONOMY & DEVELOPMENT
+  { id: "eco_res4", tree: "Economy & Development", name: "Cutting Edge Instruments IV (Forschung)", current: 3, max: 4, style: "all", tag: "Time-Saver", cost: { metal: 14, water: 14, credits: 12, cores: 2.8 }, requires: [], unlocks: "Lagerkapazität IV (Pflicht für Tier 5)", baseWeight: 96, note: "1 Stufe fehlt! Verkürzt dauerhaft alle kommenden langen Forschungen." },
+  { id: "eco_food4", tree: "Economy & Development", name: "Nahrungsproduktion IV", current: 3, max: 4, style: "all", tag: "Eco", cost: { metal: 10, water: 10, credits: 8, cores: 1.8 }, requires: [], unlocks: "Lagerkapazität IV", baseWeight: 45, note: "Optionaler Ressourcen-Boost (1 Stufe offen)." },
+  { id: "eco_cap4", tree: "Economy & Development", name: "Lagerkapazität & Schutz IV", current: 1, max: 4, style: "all", tag: "Gatekeeper", cost: { metal: 12, water: 12, credits: 10, cores: 2.2 }, requires: [{ id: "eco_res4", lvl: 4 }], unlocks: "Tier 5 (Cutting Edge Instruments V)", baseWeight: 68, note: "Muss auf 4/4 gezogen werden, bevor Tier 5 weiter hochgelevelt werden kann." },
+  { id: "eco_res5", tree: "Economy & Development", name: "Cutting Edge Instruments V (Forschung)", current: 1, max: 5, style: "all", tag: "Time-Saver", cost: { metal: 22, water: 22, credits: 18, cores: 4.5 }, requires: [{ id: "eco_cap4", lvl: 4 }], unlocks: "Maximale Forschungsgeschwindigkeit", baseWeight: 90, note: "Wird für Stufen 2–5 frei, sobald Tier 4 darüber durchgeschaltet ist." },
 
-  // 3. FLAGSHIPS & COMBAT CRAFT (Start: 52.67%)
-  { id: "fcc_b3_kin_def", tree: "Flagships & Combat Craft", name: "Block 3: Kinetic Defense (Braun)", current: 3, max: 4, style: "kinetic", tag: "Main-Fleet", reqMat: "cores", minMat: 1500, requires: [], unlocks: "Block 3 Abschluss (Kinetic)", baseWeight: 78, note: "Noch 1 Stufe bis 4/4." },
-  { id: "fcc_b3_kin_eng", tree: "Flagships & Combat Craft", name: "Block 3: Kinetic Energy (Braun)", current: 2, max: 4, style: "kinetic", tag: "Main-Fleet", reqMat: "cores", minMat: 1500, requires: [], unlocks: "Block 3 Fleet-Stats", baseWeight: 75, note: "Wichtig für Skill-Schaden deiner Main-Flotte." },
-  { id: "fcc_b3_beam_eng", tree: "Flagships & Combat Craft", name: "Block 3: Beam Energy (Slot 1 aktiv)", current: 1, max: 4, style: "beam", tag: "Aktiv", running: true, reqMat: "cores", minMat: 1500, requires: [], unlocks: "Block 3 Beam-Pfad", baseWeight: 62, note: "Läuft aktuell in Forschungsslot 1." },
-  { id: "fcc_b3_ion_atk", tree: "Flagships & Combat Craft", name: "Block 3: Ion Attack (Slot 2 aktiv)", current: 2, max: 4, style: "ion", tag: "Aktiv", running: true, reqMat: "cores", minMat: 1500, requires: [], unlocks: "Block 3 Ion-Pfad", baseWeight: 60, note: "Läuft aktuell in Forschungsslot 2." },
-  { id: "fcc_b3_fleet", tree: "Flagships & Combat Craft", name: "Block 3: Fleet Defense / Attack / Energy", current: 1, max: 4, style: "all", tag: "Flotten-Basis", reqMat: "cores", minMat: 1600, requires: [{ id: "fcc_b3_kin_def", lvl: 4 }], unlocks: "Block 4 (T5 Flotten-Boni)", baseWeight: 76, note: "Wirkt auf alle deine Flotten gleichzeitig." },
-  { id: "fcc_b4_hp", tree: "Flagships & Combat Craft", name: "Block 4: Fleet HP (T5 Basis)", current: 1, max: 5, style: "all", tag: "HP is King", reqMat: "cores", minMat: 2200, requires: [{ id: "fcc_b3_fleet", lvl: 4 }], unlocks: "Unterer T5-Flottenbaum", baseWeight: 88, note: "Laut Meta der wichtigste Combat-Stat im Lategame." },
+  // 3. FLAGSHIPS & COMBAT CRAFT
+  { id: "fcc_b3_kin_def", tree: "Flagships & Combat Craft", name: "Block 3: Kinetic Defense (Braun)", current: 3, max: 4, style: "kinetic", tag: "Main-Fleet", cost: { metal: 16, water: 16, credits: 14, cores: 3.0 }, requires: [], unlocks: "Block 3 Abschluss (Kinetic)", baseWeight: 78, note: "Noch 1 Stufe bis 4/4." },
+  { id: "fcc_b3_kin_eng", tree: "Flagships & Combat Craft", name: "Block 3: Kinetic Energy (Braun)", current: 2, max: 4, style: "kinetic", tag: "Main-Fleet", cost: { metal: 14, water: 14, credits: 12, cores: 2.5 }, requires: [], unlocks: "Block 3 Fleet-Stats", baseWeight: 75, note: "Wichtig für Skill-Schaden deiner Main-Flotte." },
+  { id: "fcc_b3_beam_eng", tree: "Flagships & Combat Craft", name: "Block 3: Beam Energy (Slot 1 aktiv)", current: 1, max: 4, style: "beam", tag: "Aktiv", running: true, cost: { metal: 12, water: 12, credits: 10, cores: 2.0 }, requires: [], unlocks: "Block 3 Beam-Pfad", baseWeight: 62, note: "Läuft aktuell in Forschungsslot 1." },
+  { id: "fcc_b3_ion_atk", tree: "Flagships & Combat Craft", name: "Block 3: Ion Attack (Slot 2 aktiv)", current: 2, max: 4, style: "ion", tag: "Aktiv", running: true, cost: { metal: 14, water: 14, credits: 12, cores: 2.2 }, requires: [], unlocks: "Block 3 Ion-Pfad", baseWeight: 60, note: "Läuft aktuell in Forschungsslot 2." },
+  { id: "fcc_b4_hp", tree: "Flagships & Combat Craft", name: "Block 4: Fleet HP (T5 Basis)", current: 1, max: 5, style: "all", tag: "HP is King", cost: { metal: 26, water: 26, credits: 22, cores: 5.0 }, requires: [{ id: "fcc_b3_kin_def", lvl: 4 }], unlocks: "Unterer T5-Flottenbaum", baseWeight: 88, note: "Laut Meta der wichtigste Combat-Stat im Lategame." },
 
-  // 4. EPOCH OF FUSION SEED (Start: 22.56% -> Ziel: Core 33 = 4. Battle Queue!)
-  { id: "epo_seeds", tree: "Epoch of Fusion Seed", name: "Fusion Seed Ressourcen-Output", current: 5, max: 10, style: "all", tag: "Seed-Ökonomie", reqMat: "prism_purple", minMat: 250, requires: [], unlocks: "Höhere Refinery-Produktion", baseWeight: 74, note: "Sichert Fusion-Seed-Nachschub für Core 31–33." },
-  { id: "epo_bld_spd", tree: "Epoch of Fusion Seed", name: "Saison-Baugeschwindigkeit", current: 3, max: 10, style: "all", tag: "Core 33 Pfad", reqMat: "prism_purple", minMat: 300, requires: [], unlocks: "Schnellere Core 31–33 Slots", baseWeight: 77, note: "Verkürzt die 5 Energy-Slot-Upgrades pro Core-Level." },
-  { id: "epo_res_spd", tree: "Epoch of Fusion Seed", name: "Saison-Forschungsgeschwindigkeit", current: 2, max: 10, style: "all", tag: "Time-Saver", reqMat: "prism_purple", minMat: 300, requires: [], unlocks: "Schnellere Epoch-Forschungen", baseWeight: 83, note: "Beschleunigt alle teuren Epoch-Forschungen darunter." },
-  { id: "epo_core2", tree: "Epoch of Fusion Seed", name: "Zentral: Fusion Seed Mastery II", current: 6, max: 10, style: "all", tag: "Gatekeeper", reqMat: "prism_purple", minMat: 400, requires: [{ id: "epo_res_spd", lvl: 2 }], unlocks: "Zusätzliche Fusion-Reaktoren (+2)", baseWeight: 91, note: "Pflichtknoten (6/10 -> 10/10), um die untere Baumhälfte zu öffnen!" },
-  { id: "epo_reactors", tree: "Epoch of Fusion Seed", name: "Fusion Reactor Kapazität & Output (Unten)", current: 0, max: 10, style: "all", tag: "Reaktor-Unlock", reqMat: "prism_purple", minMat: 500, requires: [{ id: "epo_core2", lvl: 10 }], unlocks: "Fusion Power Systems (Endknoten)", baseWeight: 94, note: "Erhöht aktive Reaktoren in der Refinery (bis zu 6 Stück)." },
-  { id: "epo_final", tree: "Epoch of Fusion Seed", name: "Fusion Power Systems (Core 35 Cap)", current: 0, max: 1, style: "all", tag: "4. Flotte (Core 33)", reqMat: "prism_teal", minMat: 200, requires: [{ id: "epo_reactors", lvl: 5 }], unlocks: "Energy Core Lvl 31–35 (Core 33 = 4. Flotte!)", baseWeight: 99, note: "Schaltet Core 31–35 frei. Bei Core 33 erhältst du sofort den 4. Flotten-Slot!" },
+  // 4. EPOCH OF FUSION SEED
+  { id: "epo_res_spd", tree: "Epoch of Fusion Seed", name: "Saison-Forschungsgeschwindigkeit", current: 2, max: 10, style: "all", tag: "Time-Saver", cost: { metal: 8, water: 8, credits: 6, cores: 1.5, prism_purple: 300 }, requires: [], unlocks: "Schnellere Epoch-Forschungen", baseWeight: 83, note: "Beschleunigt alle teuren Epoch-Forschungen darunter." },
+  { id: "epo_core2", tree: "Epoch of Fusion Seed", name: "Zentral: Fusion Seed Mastery II", current: 6, max: 10, style: "all", tag: "Gatekeeper", cost: { metal: 10, water: 10, credits: 8, cores: 2.0, prism_purple: 400 }, requires: [{ id: "epo_res_spd", lvl: 2 }], unlocks: "Zusätzliche Fusion-Reaktoren (+2)", baseWeight: 91, note: "Pflichtknoten (6/10 -> 10/10), um die untere Baumhälfte zu öffnen!" },
+  { id: "epo_reactors", tree: "Epoch of Fusion Seed", name: "Fusion Reactor Kapazität & Output", current: 0, max: 10, style: "all", tag: "Reaktor-Unlock", cost: { metal: 14, water: 14, credits: 12, cores: 2.5, prism_purple: 500 }, requires: [{ id: "epo_core2", lvl: 10 }], unlocks: "Fusion Power Systems (Endknoten)", baseWeight: 94, note: "Erhöht aktive Reaktoren in der Refinery (bis zu 6 Stück)." },
+  { id: "epo_final", tree: "Epoch of Fusion Seed", name: "Fusion Power Systems (Core 35 Cap)", current: 0, max: 1, style: "all", tag: "4. Flotte (Core 33)", cost: { metal: 30, water: 30, credits: 25, cores: 6.0, prism_purple: 800 }, requires: [{ id: "epo_reactors", lvl: 5 }], unlocks: "Energy Core Lvl 31–35 (Core 33 = 4. Flotte!)", baseWeight: 99, note: "Schaltet Core 31–35 frei. Bei Core 33 erhältst du sofort den 4. Flotten-Slot!" },
 
-  // 5. COMMERCE GUILD DUEL (92.95%)
-  { id: "cgd_mid", tree: "Commerce Guild Duel", name: "Zentral: Mobilization / Duel Bonus", current: 17, max: 20, style: "all", tag: "Event-Filler", reqMat: "cores", minMat: 800, requires: [], unlocks: "Event-Punkte (Arms Race / Duel)", baseWeight: 42, note: "Alle 9 Truhen schon frei – ideal für schnelle Event-Punkte." },
-  { id: "cgd_bot1", tree: "Commerce Guild Duel", name: "GvG Kampf-Angriff (Unten Links)", current: 8, max: 10, style: "all", tag: "Event-Filler", reqMat: "cores", minMat: 900, requires: [], unlocks: "GvG Stats", baseWeight: 38, note: "Kurze Laufzeit für Arms Race / Guild Duel." },
-  { id: "cgd_bot2", tree: "Commerce Guild Duel", name: "GvG Kampf-Schaden (Unten Mitte)", current: 8, max: 10, style: "all", tag: "Event-Filler", reqMat: "cores", minMat: 900, requires: [], unlocks: "GvG Stats", baseWeight: 38, note: "Kurze Laufzeit für Arms Race / Guild Duel." },
-  { id: "cgd_bot3", tree: "Commerce Guild Duel", name: "GvG Kampf-Verteidigung (Unten Rechts)", current: 7, max: 10, style: "all", tag: "Event-Filler", reqMat: "cores", minMat: 900, requires: [], unlocks: "GvG Stats", baseWeight: 36, note: "Kurze Laufzeit für Arms Race / Guild Duel." }
+  // 5. COMMERCE GUILD DUEL
+  { id: "cgd_mid", tree: "Commerce Guild Duel", name: "Zentral: Mobilization / Duel Bonus", current: 17, max: 20, style: "all", tag: "Event-Filler", cost: { metal: 6, water: 6, credits: 5, cores: 1.0 }, requires: [], unlocks: "Event-Punkte (Arms Race / Duel)", baseWeight: 42, note: "Alle 9 Truhen frei – ideal für schnelle Event-Punkte." },
+  { id: "cgd_bot1", tree: "Commerce Guild Duel", name: "GvG Kampf-Angriff (Unten Links)", current: 8, max: 10, style: "all", tag: "Event-Filler", cost: { metal: 7, water: 7, credits: 6, cores: 1.2 }, requires: [], unlocks: "GvG Stats", baseWeight: 38, note: "Kurze Laufzeit für Arms Race / Guild Duel." }
 ];
 
-let nodes = JSON.parse(localStorage.getItem("fgf_research_nodes_v3")) || structuredClone(INITIAL_DATA);
-let inventory = JSON.parse(localStorage.getItem("fgf_research_inv_v3")) || structuredClone(INITIAL_INVENTORY);
+let nodes = JSON.parse(localStorage.getItem("fgf_research_nodes_v4")) || structuredClone(INITIAL_DATA);
+let inventory = JSON.parse(localStorage.getItem("fgf_research_inv_v4")) || structuredClone(INITIAL_INVENTORY);
 let activeTree = "Alle";
 
 function saveState() {
-  localStorage.setItem("fgf_research_nodes_v3", JSON.stringify(nodes));
-  localStorage.setItem("fgf_research_inv_v3", JSON.stringify(inventory));
+  localStorage.setItem("fgf_research_nodes_v4", JSON.stringify(nodes));
+  localStorage.setItem("fgf_research_inv_v4", JSON.stringify(inventory));
 }
 
 function resetData() {
@@ -244,22 +244,26 @@ function resetData() {
   render();
 }
 
+function getInv(id) {
+  const item = inventory.find(x => x.id === id);
+  return item ? item.value : 0;
+}
+
 function updateInv(id, val) {
   const item = inventory.find(x => x.id === id);
   if (!item) return;
-  item.value = Math.max(0, parseInt(val, 10) || 0);
+  item.value = Math.max(0, parseFloat(val) || 0);
   saveState();
-  renderRecommendations();
+  render();
 }
 
-// Prüft, ob alle Pflicht-Voraussetzungen (DAG) erfüllt sind
 function checkPrerequisites(node) {
   if (!node.requires || node.requires.length === 0) return { unlocked: true, missingText: "" };
   const missing = [];
   for (const req of node.requires) {
     const parent = nodes.find(x => x.id === req.id);
     if (parent && parent.current < req.lvl) {
-      missing.push(`${parent.name} (${parent.current}/${req.lvl})`);
+      missing.push(`Lvl ${req.lvl} ${parent.name} (${parent.current}/${req.lvl})`);
     }
   }
   return missing.length === 0
@@ -267,21 +271,38 @@ function checkPrerequisites(node) {
     : { unlocked: false, missingText: `Benötigt: ${missing.join(", ")}` };
 }
 
-function hasEnoughMat(node) {
-  const item = inventory.find(x => x.id === node.reqMat);
-  if (!item) return { ok: true, label: "Material OK" };
-  return item.value >= node.minMat
-    ? { ok: true, label: `${item.label}: ${item.value.toLocaleString("de-DE")}` }
-    : { ok: false, label: `${item.label} knapp (${item.value.toLocaleString("de-DE")})` };
+function checkResources(node) {
+  if (!node.cost) return { ok: true, summary: "Keine Kosten", missingList: [] };
+  const c = node.cost;
+  const missing = [];
+  if (c.metal && getInv("metal") < c.metal) missing.push(`${(c.metal - getInv("metal")).toFixed(2)}M Metall`);
+  if (c.water && getInv("water") < c.water) missing.push(`${(c.water - getInv("water")).toFixed(2)}M Wasser`);
+  if (c.credits && getInv("credits") < c.credits) missing.push(`${(c.credits - getInv("credits")).toFixed(2)}M Credits`);
+  if (c.cores && getInv("cores") < c.cores) missing.push(`${(c.cores - getInv("cores")).toFixed(2)}K Kerne`);
+  if (c.prism_purple && getInv("prism_purple") < c.prism_purple) missing.push(`${c.prism_purple - getInv("prism_purple")} Prismen`);
+
+  const costParts = [];
+  if (c.metal) costParts.push(`Metall: ${c.metal}M`);
+  if (c.water) costParts.push(`Wasser: ${c.water}M`);
+  if (c.credits) costParts.push(`Credits: ${c.credits}M`);
+  if (c.cores) costParts.push(`Kerne: ${c.cores}K`);
+  if (c.prism_purple) costParts.push(`Prismen: ${c.prism_purple}`);
+
+  return {
+    ok: missing.length === 0,
+    costText: costParts.join(" | "),
+    missingText: missing.length > 0 ? `Es fehlt: ${missing.join(", ")}` : "Alle Ressourcen vorhanden"
+  };
 }
 
 function calculateScore(node) {
   if (node.current >= node.max || node.running) return -1;
   const prereq = checkPrerequisites(node);
-  if (!prereq.unlocked) return -1; // Gesperrte Knoten werden NICHT direkt empfohlen!
+  if (!prereq.unlocked) return -1;
 
   const focus = document.getElementById("focusStyle").value;
   const mode = document.getElementById("goalMode").value;
+  const res = checkResources(node);
   let score = node.baseWeight;
 
   if (node.style === focus) score += 18;
@@ -299,7 +320,8 @@ function calculateScore(node) {
   }
 
   if (node.max - node.current === 1) score += 10;
-  if (!hasEnoughMat(node).ok) score -= 25;
+  // Leichter Abzug, wenn erst noch Ressourcen-Kisten geöffnet werden müssen, bleibt aber sichtbar!
+  if (!res.ok) score -= 12;
 
   return score;
 }
@@ -314,15 +336,14 @@ function updateLevel(id, delta) {
 }
 
 function renderMilestones() {
-  // Berechne CCM-% ausgehend vom echten Screenshot-Wert (56.5% bei 55 erledigten Track-Stufen)
   const ccmNodes = nodes.filter(n => n.tree === "Combat Craft Modification");
   const ccmDone = ccmNodes.reduce((s, n) => s + n.current, 0);
-  const ccmBaseDone = 55; // Startwert aus Screenshots
+  const ccmBaseDone = 54;
   const ccmPct = Math.min(100, +(56.5 + (ccmDone - ccmBaseDone) * 1.45).toFixed(1));
   const missingFor80 = Math.max(0, Math.ceil((80 - ccmPct) / 1.45));
 
-  const t7Ready = nodes.find(n => n.id === "ccm_t7_kin").current >= 10;
-  const epoFinal = nodes.find(n => n.id === "epo_final").current >= 1;
+  const t7GateDone = nodes.find(n => n.id === "ccm_t7_kin").current >= 10;
+  const warframeDone = nodes.find(n => n.id === "ccm_t7_unit_kin").current >= 1;
 
   document.getElementById("milestonesGrid").innerHTML = `
     <div class="milestone-card">
@@ -335,11 +356,11 @@ function renderMilestones() {
     </div>
     <div class="milestone-card">
       <div class="ms-top">
-        <span>T7 Kinetic &amp; Core 33 (4. Flotten-Slot)</span>
-        <span style="color:${t7Ready ? 'var(--green)' : 'var(--gold)'}">${t7Ready ? 'T7 Bereit!' : '1 Stufe bis T7'}</span>
+        <span>T7 WARFRAME Status (+250.000 Power)</span>
+        <span style="color:${warframeDone ? 'var(--green)' : 'var(--gold)'}">${warframeDone ? 'T7 Aktiv!' : t7GateDone ? 'Gatekeeper 10/10 -> Ressourcen sammeln!' : '9/10 Gatekeeper'}</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${t7Ready ? 100 : 90}%; background:var(--gold);"></div></div>
-      <div class="ms-sub">${epoFinal ? 'Core 35 Cap offen -> Energy Core auf Lvl 33 für 4. Flotte pushen!' : 'T7 Gatekeeper auf 10/10 bringen & danach Epoch of Fusion Seed bis Fusion Power Systems durchziehen.'}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${warframeDone ? 100 : t7GateDone ? 95 : 85}%; background:var(--gold);"></div></div>
+      <div class="ms-sub">${warframeDone ? 'T7 Kinetic Craft freigeschaltet!' : 'Für WARFRAME brauchst du Lvl 10 Assembly Line + 43M Metall & 43M Wasser (Kisten im Inventar prüfen!).'}</div>
     </div>
   `;
 }
@@ -349,14 +370,14 @@ function renderInventory() {
   invGrid.innerHTML = inventory.map(i => `
     <div class="inv-item">
       <span class="inv-label">${i.label}</span>
-      <input type="number" min="0" value="${i.value}" onchange="updateInv('${i.id}', this.value)" />
+      <input type="number" min="0" step="${i.step || 1}" value="${i.value}" onchange="updateInv('${i.id}', this.value)" />
     </div>
   `).join("");
 }
 
 function renderRecommendations() {
   const ranked = [...nodes]
-    .map(n => ({ ...n, score: calculateScore(n), mat: hasEnoughMat(n) }))
+    .map(n => ({ ...n, score: calculateScore(n), res: checkResources(n) }))
     .filter(n => n.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
@@ -367,11 +388,14 @@ function renderRecommendations() {
       <div>
         <div class="rec-top">
           <span class="rec-rank">Empfehlung #${idx + 1} &bull; Score ${r.score}</span>
-          <span class="rec-ready ${r.mat.ok ? 'ready-yes' : 'ready-warn'}">${r.mat.ok ? 'Frei &amp; Material OK' : 'Material prüfen'}</span>
+          <span class="rec-ready ${r.res.ok ? 'ready-yes' : 'ready-warn'}">${r.res.ok ? 'Sofort startbar' : 'Kisten öffnen'}</span>
         </div>
         <div class="rec-title">${r.name}</div>
-        <div class="rec-tree">${r.tree} &bull; ${r.mat.label}</div>
-        ${r.unlocks ? `<div class="rec-unlocks">Schaltet frei: ${r.unlocks}</div>` : ''}
+        <div class="rec-tree">${r.tree}</div>
+        <div class="rec-cost ${r.res.ok ? '' : 'missing'}">
+          <strong>Kosten:</strong> ${r.res.costText}<br/>
+          <span>${r.res.missingText}</span>
+        </div>
       </div>
       <div class="rec-reason">${r.note}</div>
       <div class="rec-action">
@@ -404,6 +428,7 @@ function render() {
   grid.innerHTML = visible.map(n => {
     const isMaxed = n.current >= n.max;
     const prereq = checkPrerequisites(n);
+    const res = checkResources(n);
     const pct = (n.current / n.max) * 100;
 
     let badge = "";
@@ -421,7 +446,7 @@ function render() {
           </div>
           <div class="node-meta" style="margin-top:4px;">${n.tree} &bull; ${n.note}</div>
           ${!prereq.unlocked ? `<div class="req-box" style="margin-top:6px;">${prereq.missingText}</div>` : ''}
-          ${n.unlocks ? `<div class="unlock-box" style="margin-top:6px;">Schaltet frei: ${n.unlocks}</div>` : ''}
+          ${!isMaxed ? `<div class="cost-box ${res.ok ? '' : 'shortage'}" style="margin-top:6px;"><strong>Kosten:</strong> ${res.costText}${!res.ok ? `<br/><strong>${res.missingText}</strong>` : ''}</div>` : ''}
         </div>
         <div>
           <div class="progress-bar" style="margin-bottom:8px;">
